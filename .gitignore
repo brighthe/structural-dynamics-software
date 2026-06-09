@@ -1,0 +1,29 @@
+# ---- 敏感采购文档（默认不纳入版本控制，按需取消注释提交）----
+# 招标文件等可能含预算 / 投标 / 技术参数等敏感信息，
+# 在公开仓库中默认排除。确认可公开后再手动 git add -f 或删除此规则。
+docs/procurement/*.docx
+docs/procurement/*.doc
+docs/procurement/*.pdf
+docs/procurement/*.xlsx
+docs/procurement/*.xls
+
+# ---- 系统文件 ----
+.DS_Store
+Thumbs.db
+
+# ---- 临时文件 ----
+*.tmp
+*.tmp.*
+*~
+
+# ---- 常见构建 / 依赖产物（为后续代码预留）----
+build/
+dist/
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+venv/
+*.o
+*.obj
+*.exe
