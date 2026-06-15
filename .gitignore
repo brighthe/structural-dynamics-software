@@ -23,3 +23,7 @@ venv/
 *.o
 *.obj
 *.exe
+
+# ---- 参考原件（招标原件 / 他方标书样例，仅本地参考，不入库）----
+/docs/*.pdf
+/docs/procurement/*.pdf
