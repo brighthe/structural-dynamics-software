@@ -1,0 +1,17 @@
+{
+  "name": "structural-docs-marketplace",
+  "owner": {
+    "name": "大连理工大学 · 结构动力学软件模块项目"
+  },
+  "metadata": {
+    "description": "结构动力学求解器文档工具集的本地插件市场",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "structural-docs-kit",
+      "source": "./plugins/structural-docs-kit",
+      "description": "面向结构动力学中文技术文档与 C 包投标方案的写作助手：技术正确性审校、术语一致性巡检、家族写作风格。"
+    }
+  ]
+}

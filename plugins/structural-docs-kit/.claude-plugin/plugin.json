@@ -1,0 +1,15 @@
+{
+  "name": "structural-docs-kit",
+  "version": "0.1.0",
+  "description": "结构动力学中文技术文档与投标方案写作助手：技术审校、术语巡检、家族写作风格。",
+  "author": {
+    "name": "大连理工大学 · 结构动力学软件模块项目"
+  },
+  "keywords": [
+    "structural-dynamics",
+    "documentation",
+    "chinese",
+    "tender",
+    "latex"
+  ]
+}
