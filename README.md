@@ -9,10 +9,11 @@ structural-dynamics-software/
 ├── docs/                 # 项目文档
 │   └── procurement/      # 采购 / 招标 / 合同相关文档
 ├── src/                  # 软件源代码（后续开发）
-├── CLAUDE.md             # Claude Code 工作指引（写作约定、文档地图）
-├── .claude/             # Claude Code 辅助工具（技能 / 子代理 / 命令）
-├── .claude-plugin/      # 本仓库作为插件市场的清单
-├── plugins/             # 打包为可复用插件 structural-docs-kit（参考样板）
+├── ai/
+│   ├── claude/           # Claude Code 专用规则、live 配置与插件样板
+│   └── codex/            # Codex 专用规则与说明
+├── CLAUDE.md             # Claude Code 薄入口，指向 ai/claude/
+├── AGENTS.md             # Codex 薄入口，指向 ai/codex/
 └── README.md
 ```
 
@@ -22,27 +23,35 @@ structural-dynamics-software/
 - `src/`：结构动力学软件模块的源代码
 - 敏感文档（含预算、投标信息等）请按需放入忽略列表或单独私有保存，见 `.gitignore`
 
-## Claude Code 辅助工具
+## AI 辅助工具
 
-本仓库配有一套 Claude Code 辅助写作工具，克隆即生效：
+本仓库将 Claude Code 与 Codex 的配置分区放置，避免两套工具的规则和插件机制混在一起：
+
+- `ai/claude/`：Claude Code 专用，包括 `CLAUDE.md`、`.claude/`、`.claude-plugin/` 与 `plugins/structural-docs-kit/`。
+- `ai/codex/`：Codex 专用，包括完整的 `AGENTS.md` 工作规则、写作风格、技术审校与术语巡检流程。
+- 根目录 `CLAUDE.md` 和 `AGENTS.md` 只保留薄入口，分别指向对应分区。
+
+### Claude Code
+
+Claude Code 辅助写作工具包括：
 
 - **技能** `house-style`：撰写/修改文档时自动加载的家族写作风格；
 - **子代理** `dynamics-reviewer`（技术正确性深审）、`terminology-guardian`（术语一致性巡检）；
 - **命令** `/review-doc`（技术审校）、`/term-check`（术语巡检）。
 
-### 使用方式（新会话同样适用）
+使用方式：
 
-**前提**：在本仓库目录内启动 Claude Code，以下能力才会加载（在别的目录开会话则不生效）。
-
-- **自动生效，无需操作**：
-  - `CLAUDE.md` 会话开始即读入；
-  - 让 Claude 写/改 docs 下文档时，`house-style` 自动按家族风格写（也可说"按 house-style 写"）。
-- **主动触发审校**，两种等价方式任选：
+- 根目录 [CLAUDE.md](CLAUDE.md) 指向完整规则 [ai/claude/CLAUDE.md](ai/claude/CLAUDE.md)。
+- live 配置已集中在 `ai/claude/.claude/`；如需让 Claude Code 自动发现命令/子代理/技能，可能需要按 Claude Code 当前机制把该目录放回根目录或在 Claude 侧做对应配置。
+- 主动触发审校时，两种方式任选：
   - 敲斜杠命令：`/review-doc`（可带文件名，如 `/review-doc docs/三包知识框架.md`）、`/term-check`（可带聚焦词，如 `/term-check 阻尼`）；
   - 直接说："帮我审一下技术正确性""查一下术语统不统一"——Claude 会自动派对应子代理。
-- **查看可用项**：敲 `/` 看命令列表，敲 `/agents` 看子代理列表。
 
-详细规则见 [CLAUDE.md](CLAUDE.md)。同款能力打包为可复用插件 `structural-docs-kit`（参考样板，默认不自动启用；见 [plugins/structural-docs-kit/README.md](plugins/structural-docs-kit/README.md)）。
+同款能力打包为可复用插件 `structural-docs-kit`（参考样板，默认不自动启用；见 [ai/claude/plugins/structural-docs-kit/README.md](ai/claude/plugins/structural-docs-kit/README.md)）。
+
+### Codex
+
+Codex 规则见根目录 [AGENTS.md](AGENTS.md) 与完整规则 [ai/codex/AGENTS.md](ai/codex/AGENTS.md)。写作风格、技术审校与术语巡检流程见 [ai/codex/instructions/](ai/codex/instructions/)。
 
 ---
 
