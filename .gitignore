@@ -26,4 +26,5 @@ venv/
 
 # ---- 参考原件（招标原件 / 他方标书样例，仅本地参考，不入库）----
 /docs/*.pdf
-/docs/procurement/*.pdf
+/docs/招标文件/*.pdf
+/docs/参考资料/*.pdf
