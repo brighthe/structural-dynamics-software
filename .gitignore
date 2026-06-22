@@ -11,6 +11,24 @@ Thumbs.db
 *.tmp
 *.tmp.*
 *~
+~$*.docx
+*.docx
+*.pdf
+
+# ---- local document build / merge scratch ----
+.claude/
+.codex_tmp/
+.review/
+tmp/
+_final_check*/
+_lo_profile*/
+_render*/
+_mergebuild/
+**/_merge_tmp/
+**/_codex_images_random_vibration/
+**/render_check*/
+**/render_random_vibration_supplement/
+**/render_stationary_supplement/
 
 # ---- 常见构建 / 依赖产物（为后续代码预留）----
 build/
