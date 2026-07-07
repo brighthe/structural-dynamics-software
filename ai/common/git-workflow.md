@@ -35,6 +35,8 @@ git/ssh 操作要用**操作系统原生 git**——它的 ssh 会去读 `~/.ssh
        UserKnownHostsFile ~/.ssh/known_hosts
    ```
 4. 验证：在**原生 shell**（非 cygwin）里 `ssh -T git@github.com` 应回显 `Hi brighthe!`。之后 `git clone` / `git push` 自动走 443。
+5. **配置提交身份**（账户级，一次即所有仓库通用；缺这步 commit 会报 `Author identity unknown`）：
+   `git config --global user.name "brighthe"`、`git config --global user.email "brighthe98@gmail.com"`。
 
 ## §4 本机现状（仅 heliang-windows-laptop，参考）
 
