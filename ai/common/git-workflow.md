@@ -1,0 +1,57 @@
+# Git 提交与推送工作流（本仓库）
+
+> **触发时机**：用户要求提交（commit）或推送（push）到远程时，先读本文件再操作。本文件是操作规程，不是用户发起型任务，无需启动语——用户说“提交/推送”即触发。
+>
+> 本文件**工具无关**（Claude Code / Codex 等通用），且**尽量机器无关**：可移植的方法见 §1–§3，某台机器的具体值见 §4「本机现状」。
+
+## §1 用操作系统原生 git（跨 Agent 通用原则）
+
+git/ssh 操作要用**操作系统原生 git**——它的 ssh 会去读 `~/.ssh`（Windows 上即 `C:\Users\<你>\.ssh`）。**不要用把 `HOME` 改写到别处的 POSIX 模拟环境**（cygwin / MSYS / WSL 里指向别处的 ssh），否则读不到密钥与 config，会误报 `no such identity` / `Host key verification failed`——其实配置是好的。
+
+- **Claude Code**：用 **PowerShell**（原生 Windows git），别用 **Bash 工具**（cygwin）。
+- **Codex / Antigravity 等**：用各自能调用系统原生 git 的方式，避开 MSYS/cygwin 版 git。
+- **诊断鉴权**（只读、不改动任何东西）：`git -C <repo> ls-remote --heads origin`。
+
+## §2 鉴权方式：SSH over 443
+
+- 远程用 SSH：`git@github.com:brighthe/structural-dynamics-software.git`。
+- **沙箱封 SSH 22 端口**、**HTTPS 在沙箱无法鉴权**（无凭据助手、无缓存凭据、无 `gh`、无交互 tty）→ 统一走 GitHub 的 **SSH over 443**（`ssh.github.com:443`）。
+- 靠**全局 `~/.ssh/config`** 把 `github.com` 映射到 443，每台机器配一次即整机所有仓库生效，无需逐仓库设置。
+
+## §3 新机器一次性配置（任何机器照此即可提交）
+
+1. 生成**无口令** ed25519 密钥（非交互推送需无口令）：
+   `ssh-keygen -t ed25519 -C "<设备名>" -f ~/.ssh/id_ed25519 -N ""`
+2. 把 `~/.ssh/id_ed25519.pub` 加到 **GitHub 账户**的 SSH keys（标题按**设备**命名，如 `heliang-windows-laptop`；账户级密钥对 brighthe 名下所有仓库生效）。
+3. 在 `~/.ssh/config` 追加（`~` 由原生 git/ssh 正确解析，**不写绝对路径**即可移植）：
+   ```
+   Host github.com
+       HostName ssh.github.com
+       Port 443
+       User git
+       IdentityFile ~/.ssh/id_ed25519
+       IdentitiesOnly yes
+       StrictHostKeyChecking accept-new
+       UserKnownHostsFile ~/.ssh/known_hosts
+   ```
+4. 验证：在**原生 shell**（非 cygwin）里 `ssh -T git@github.com` 应回显 `Hi brighthe!`。之后 `git clone` / `git push` 自动走 443。
+
+## §4 本机现状（仅 heliang-windows-laptop，参考）
+
+- 密钥 `C:\Users\Lenovo\.ssh\id_ed25519`（无口令）；config 已配 443；公钥标题 `heliang-windows-laptop`。
+- 各仓库 `.git/config` 另设了等价的 `core.sshCommand`（绝对路径）——历史遗留、**只对本机有效**；有 §3 的全局 config 就够，新机器**不必**再设。
+- ⚠️ 以上绝对路径与 `core.sshCommand` **仅本机**有效；换机器一律照 §3 走。
+
+## §5 提交纪律
+
+- **仅在用户明确要求时**提交/推送。
+- **敏感文档守卫（本仓库重点）**：含**预算、投标信息、他方标书**等敏感内容的文件不应进公共历史。提交前 `git status` + `git diff --staged` 逐一核对，确认这类文件已被 [.gitignore](../../.gitignore) 排除或单独私有保存，**不要误 `add` 进来**。招标原件、他方标书样例（`.docx`/`.pdf`）仅作检索参考，不入库、也不大段复制进 Markdown。
+- 用 `git status` 甄别，**只 `git add` 本次任务相关文件**，不要 `git add -A`。
+- 提交信息用**简体中文**，结尾附 `Co-Authored-By: Claude <...>` 尾注。
+- **分支策略**：直接在 `main` 上提交，**不开分支、不走 PR**（个人项目库；`docs/` 文档阶段与后续 `src/` 代码阶段一致）。
+
+## §6 排错速查
+
+- `could not read Username for 'https://github.com'` → 远程是 HTTPS；`git remote set-url origin git@github.com:brighthe/structural-dynamics-software.git`。
+- `Connection closed by ... port 22` → 没走 443；检查 `~/.ssh/config` 的 443 段（§3）。
+- `no such identity` / `Host key verification failed` → 多半在 cygwin/MSYS 环境里跑的；换系统原生 git（§1）。
